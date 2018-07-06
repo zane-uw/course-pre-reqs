@@ -5,6 +5,9 @@
 # project config options
 config.R
 
+# project data
+/data/
+
 # Session Data files
 .RData
 
