@@ -5,10 +5,11 @@
 # project config options
 config.R
 
-# project files
+# project files and dirs
 *.csv
 *.html
 *.RData
+vizzes/
 
 # Session Data files
 .RData
