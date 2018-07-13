@@ -58,8 +58,8 @@ dat <- dat[dat$course.to %in% course.info$course,]
 # vertex metadata:
 clist <- sort(unique(c(dat$course.to, dat$course.from)))
 attribs <- course.info %>% filter(course %in% clist) %>% select(course, everything()) %>% arrange(course) %>%
-  mutate(level1 = course_number %/% 100,
-         level2 = course_number %% 100)
+  mutate(level = ifelse(course_number %% 100 < 50, (course_number%/%100) * 10, (course_number %/% 100) * 10 + 5),
+         course.level = (course_number %/% 100) * 100)
 
 el <- dat %>% select(course.from, course.to, pr_seq_no, pr_group_no, pr_and_or, pr_grade_min, pr_cr_s, pr_concurrency)
 n <- graph_from_data_frame(el, directed = T, vertices = attribs)
