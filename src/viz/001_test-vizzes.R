@@ -8,17 +8,7 @@ library(visNetwork)
 library(networkD3)
 source("src/pre-req-helpers.R")
 
-load("data/raw/pre-req-raw.RData")
-
-par(mar=c(0,0,0,0)+.1)
-
-igraph_options(vertex.label.cex = .8,
-               vertex.label.color = 'black',
-               vertex.size = 6,
-               vertex.color = "white",
-               vertex.frame.color = 'gray',
-               edge.arrow.size = .25,
-               asp = 0)
+load("data/pre-req-raw.RData")
 
 
 # sample: simple D3 network -----------------------------------------------------------------
