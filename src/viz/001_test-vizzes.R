@@ -88,4 +88,4 @@ hcde <- edge.sub(n, "HCDE")
     visNodes(shape = "circle", size = 25, font = list(size = 17)) %>%
     visEdges(arrows = "to") %>%
     visHierarchicalLayout(direction = "DU", levelSeparation = 40, nodeSpacing = 150, treeSpacing = 150))
-visSave(vhcde, "d3_ex_hcde-edge_based", selfcontained = T)
+visSave(vhcde, "d3_ex_hcde-edge_based.html", selfcontained = T)
