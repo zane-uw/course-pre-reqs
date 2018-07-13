@@ -10,6 +10,7 @@ config.R
 *.html
 *.RData
 vizzes/
+*Icon*
 
 # Session Data files
 .RData
