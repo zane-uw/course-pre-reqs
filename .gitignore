@@ -11,6 +11,7 @@ config.R
 *.RData
 vizzes/
 *Icon*
+scratch.R
 
 # Session Data files
 .RData
