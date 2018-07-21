@@ -1,8 +1,8 @@
 # igraph prefs
 library(igraph)
 
-opar <- par()
-par(mar=c(0,0,0,0)+.1)
+.opar <- par()
+par(mar=c(0,0,0,0)+.9)
 
 igraph_options(vertex.label.cex = .5,
                vertex.label.color = 'black',
