@@ -33,9 +33,6 @@ attribs$vlab.prereqs[attribs$vlab.prereqs == "NULL"] <- ""
 attribs$vlab <- paste(attribs$long_course_title, attribs$vlab.prereqs, sep = "<br>")
 
 
-
-###############
-###############
 n <- n %>% set.vertex.attribute("long_title", value = get.vertex.attribute(., "long_course_title"))
 n <- n %>% set.vertex.attribute("title", value = attribs$vlab)
 
