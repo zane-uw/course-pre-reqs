@@ -41,24 +41,24 @@ chem <- induced_subgraph(n, V(n)[i])
 visIgraph(chem, type = "full")
 
 # or interactively fiddle with options; req's shiny
-# ntest <-
-visIgraph(chem, type = "full") %>%
-  visOptions(highlightNearest = list(enabled = T, degree = list(from = 2, to = 1), hideColor = rgb(200, 200, 200, 100, max = 255)), nodesIdSelection = T) %>%
-  visNodes(shape = "circle", size = 25, font = list(size = 17)) %>%
-  visEdges(arrows = "to") %>%
-  visHierarchicalLayout(direction = "DU", levelSeparation = 50, nodeSpacing = 800, blockShifting = T, parentCentralization = T, treeSpacing = 100)
-# custom <- visNetworkEditor(object = ntest)
+  # ntest <- visIgraph(chem, type = "full") %>%
+  #   visOptions(highlightNearest = list(enabled = T, degree = list(from = 2, to = 1), hideColor = rgb(200, 200, 200, 100, max = 255)), nodesIdSelection = T) %>%
+  #   visNodes(shape = "circle", size = 25, font = list(size = 17)) %>%
+  #   visEdges(arrows = "to") %>%
+  #   visHierarchicalLayout(direction = "DU", levelSeparation = 50, nodeSpacing = 800, blockShifting = T, parentCentralization = T, treeSpacing = 100)
+  # custom <- visNetworkEditor(object = ntest)
 
 # selection opts
 (vchem <- visIgraph(chem, type = "full") %>%
-  visOptions(highlightNearest = list(enabled = T,
-                                     algorithm = "hierarchical",
-                                     degree = list(from = 3, to = 1),
-                                     hideColor = rgb(200, 200, 200, 100, max = 255)),
-             selectedBy = list(variable = "course.level")) %>%
-  visNodes(shape = "circle", size = 25, font = list(size = 17)) %>%
-  visEdges(arrows = "to") %>%
-  visHierarchicalLayout(direction = "DU", levelSeparation = 40, nodeSpacing = 150))
+    visInteraction(multiselect = T, hideEdgesOnDrag = T, hoverConnectedEdges = T) %>%
+    visOptions(highlightNearest = list(enabled = T,
+                                       algorithm = "hierarchical",
+                                       degree = list(from = 3, to = 1),
+                                       hideColor = rgb(200, 200, 200, 100, max = 255)),
+               selectedBy = list(variable = "course.level")) %>%
+    visNodes(shape = "circle", size = 25, font = list(size = 17)) %>%
+    visEdges(arrows = "to") %>%
+    visHierarchicalLayout(direction = "LR", levelSeparation = 40, nodeSpacing = 150))
 
 setwd("vizzes")
 visSave(vchem, file = "d3_ex_chem.html", selfcontained = T)
