@@ -9,7 +9,7 @@ library(igraph)
 library(visNetwork)
 
 source("src/pre-req-helpers.R")
-load("data/raw/pre-req-raw.RData")
+load("data/pre-req-clean.RData")
 
 default.par <- par()
 par(mar=c(0,0,0,0)+.1)
