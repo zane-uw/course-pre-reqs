@@ -61,7 +61,7 @@ visIgraph(chem, type = "full")
     visHierarchicalLayout(direction = "LR", levelSeparation = 40, nodeSpacing = 150))
 
 setwd("vizzes")
-visSave(vchem, file = "d3_ex_chem.html", selfcontained = T)
+visSave(vchem, file = "ex_multiselect_chem.html", selfcontained = T)
 
 # more examples:
 anth <- edge.sub(n, "ANTH")
