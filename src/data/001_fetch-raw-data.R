@@ -13,18 +13,18 @@ options(tibble.print_max = 100)
 source("config.R")
 con <- dbConnect(odbc::odbc(), config$dns, Database = config$db, UID = config$uid, PWD = rstudioapi::askForPassword("pwd-"))
 
-dat <- tbl(con, in_schema("sec", "sr_course_prereq")) %>% filter(last_eff_yr == 9999, course_number < 500) %>% collect()
-course.info <- tbl(con, in_schema("sec", "sr_course_titles")) %>% filter(last_eff_yr == 9999) %>% collect()
+dat <- tbl(con, in_schema("sec", "sr_course_prereq")) %>% filter(course_number < 500) %>% collect() # last_eff_yr == 9999,
+course.info <- tbl(con, in_schema("sec", "sr_course_titles")) %>% collect()                         # filter(last_eff_yr == 9999)
 
-dbDisconnect(con); rm(con, config)
 
 # cleanup data ---------------------------------------------------------------
 
-dat <- dat %>% mutate_if(is.character, str_trim)
-dat$course.to <- paste(dat$department_abbrev, dat$course_number, sep = " ")
-dat$course.from <- paste(dat$pr_curric_abbr, dat$pr_course_no, sep = " ")
-f <- if_else(dat$course.to == dat$course.from, T, F); table(f)                      # loops
-dat <- dat %>% filter(dat$course.to != dat$course.from) %>% select(-contains('_spare_'), -pr_last_update_dt, -starts_with('last_eff'))
+dat <- dat %>% mutate_if(is.character, str_trim) %>%
+  mutate(course.to = paste(department_abbrev, course_number, sep = " "),
+         course.from = paste(pr_curric_abbr, pr_course_no, sep = " "))
+f <- if_else(dat$course.to == dat$course.from, T, F); table(f)                      # self-loops
+self.loops <- dat[f,]
+dat <- dat %>% filter(dat$course.to != dat$course.from) # %>% select(-contains('_spare_'), -pr_last_update_dt, -starts_with('last_eff'))
 rm(f)
 
 course.info <- course.info %>%
@@ -41,14 +41,16 @@ course.info <- course.info %>%
          -starts_with('distrib_'))
 
 
-# remove lines with inactive pre-reqs from dat
-table(dat$course.from %in% course.info$course)
-dat <- dat[dat$course.from %in% course.info$course,]
+# FLAG (no longer remove) inactive courses and prereqs
+dat$course.inactive <- if_else(dat$course.to %in% course.info$course, 0, 1)
+dat$prereq.inactive <- if_else(dat$course.from %in% course.info$course, 0, 1)
+table(dat$course.inactive)
+table(dat$prereq.inactive)
 
-# oddly enough!
-table(dat$course.to %in% course.info$course)
-dat[(dat$course.to %in% course.info$course) == F, 'course.to']
-dat <- dat[dat$course.to %in% course.info$course,]
+# # oddly enough!
+# table(dat$course.to %in% course.info$course)
+# dat[(dat$course.to %in% course.info$course) == F, 'course.to']
+# dat <- dat[dat$course.to %in% course.info$course,]
 
 # create matrix, net
 # el <- as.matrix(dat[,c('course.from', 'course.to')])
@@ -66,4 +68,5 @@ n <- graph_from_data_frame(el, directed = T, vertices = attribs)
 table(which_loop(n))  # good; check
 summary(n)
 
+dbDisconnect(con); rm(con, config)
 save(dat, attribs, n, file = "data/pre-req-clean.RData")

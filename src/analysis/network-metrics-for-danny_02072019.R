@@ -12,6 +12,8 @@ source("src/pre-req-helpers.R")
 
 load("data/pre-req-clean.RData")
 
+options(tibble.print_max = 50, tibble.print_min = 50)
+
 
 # Create more/new visNetwork compatible fields ----------------------------
 # title = hover tooltip
@@ -48,7 +50,6 @@ detach('package:igraph')
 
 # here it begins anew -----------------------------------------------------
 
-
 library(statnet)
 m <- network::as.network(m)
 
@@ -57,3 +58,29 @@ network::plot.network(m, usearrows = F, vertex.cex = .5, vertex.col = "white", e
 dev.off()
 
 summary(m)
+
+
+# Q's ---------------------------------------------------------------------
+# Is there a way to tell me:
+#   1. what’s the highest number of prereqs possible for a single course?
+#   2. what’s the highest number of courses that a single class could be a prereq for?
+#   3. the median number of prereqs possible for a single course?
+#   4. the median number of courses that a single class could be a prereq for?
+#
+# I think just the active courses. Also, could for the number of prereqs, could
+# there be a subset counting courses with a choice of prereqs count as 1?
+#
+# Ex. COURSE XXX, has 6 prereqs, but 3 of those are actually a set, like one of
+# these 3. So accounting for that, the number is 3. (2 courses + 1 of the three
+# others)
+
+# highest possible:
+dat %>% group_by(course.to) %>%
+  summarize(n = n_distinct(course.from),
+            g = n_distinct(pr_group_no)) %>%
+  arrange(desc(n))
+
+# but this is...well :(
+i <- dat[dat$course.to == "I S 300",]
+i <- i %>% group_by(course.to, course.from) %>% filter(last_eff_yr == max(last_eff_yr)) %>%
+  ungroup() %>% arrange(pr_group_no, pr_seq_no)
