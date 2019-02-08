@@ -18,6 +18,7 @@ load("data/pre-req-clean.RData")
 i <- grep("^CHEM\\s\\d", V(n)$name)
 chem <- induced_subgraph(n, V(n)[i])
 
+
   # plot(chem)
   #
   # # create a networkD3 compatible object and plot

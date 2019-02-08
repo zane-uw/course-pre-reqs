@@ -90,7 +90,7 @@ visIgraph(nets[[135]], type = "square") %>%
 #      vertex.label.cex = .5, vertex.size = 9, main = "Applied Math",
 #      sub = "showing: shortest path from MATH 125 -> AMATH 353")
 # dev.off()
-#
+
 
 
 
