@@ -3,10 +3,10 @@ gc()
 
 # setup -------------------------------------------------------------------
 
-library(tidyverse)
 library(dbplyr)
 library(odbc)
 library(igraph)
+library(tidyverse)
 
 options(tibble.print_max = 100)
 
@@ -14,8 +14,7 @@ source("config.R")
 con <- dbConnect(odbc::odbc(), config$dns, Database = config$db, UID = config$uid, PWD = rstudioapi::askForPassword("pwd-"))
 
 dat <- tbl(con, in_schema("sec", "sr_course_prereq")) %>% filter(course_number < 500) %>% collect() # last_eff_yr == 9999,
-course.info <- tbl(con, in_schema("sec", "sr_course_titles")) %>% collect()                         # filter(last_eff_yr == 9999)
-
+course.info <- tbl(con, in_schema("sec", "sr_course_titles")) %>% collect()                        # filter(last_eff_yr == 9999)
 
 # cleanup data ---------------------------------------------------------------
 
@@ -29,17 +28,10 @@ rm(f)
 
 course.info <- course.info %>%
   mutate_if(is.character, str_trim) %>%
-  mutate(course = paste(department_abbrev, course_number, sep = " ")) %>%
-  select(-approved_dt, -changed_dt, -dropped_dt, -sr_crs_dl_appr_dt, -course_comment, -prior_dept_abbr, -course_prio_list, -default_sect_type,
-         -contains('spare'),
-         -starts_with('fee_'),
-         -starts_with('prq_'),
-         -starts_with('first_'),
-         -starts_with('last_'),
-         -starts_with('resp_'),
-         -starts_with('course_flag'),
-         -starts_with('distrib_'))
-
+  group_by(department_abbrev, course_number) %>%
+  slice(n()) %>%
+  ungroup() %>%
+  mutate(course = paste(department_abbrev, course_number, sep = " "))
 
 # FLAG (no longer remove) inactive courses and prereqs
 dat$course.inactive <- if_else(dat$course.to %in% course.info$course, 0, 1)
