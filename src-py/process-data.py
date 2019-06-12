@@ -30,17 +30,20 @@ prereqs.drop(prereqs[(prereqs.course_to == prereqs.course_from)].index, inplace 
 prereqs.drop(list(prereqs.filter(regex = '_spare')), axis = 1, inplace = True)
 # prereqs.drop(columns = ['pr_last_update_dt'], inplace = True)
 
-course_data = course_data.loc[:, ['course', 'department_abbrev', 'course_number',
-                                  'last_eff_yr', 'last_eff_qtr', 'course_branch',
-                                  'course_college', 'long_course_title',
-                                  'prq_lang_of_adm', 'prq_check_grads', 'pre_cancel_req',
-                                  'course_cat_omit', 'writing_crs', 'diversity_crs',
-                                  'english_comp', 'qsr', 'vis_lit_perf_arts',
-                                  'indiv_society', 'natural_world']]
+#course_data = course_data.loc[:, ['course', 'department_abbrev', 'course_number',
+#                                  'last_eff_yr', 'last_eff_qtr', 'course_branch',
+#                                  'course_college', 'long_course_title',
+#                                  'prq_lang_of_adm', 'prq_check_grads', 'pre_cancel_req',
+#                                  'course_cat_omit', 'writing_crs', 'diversity_crs',
+#                                  'english_comp', 'qsr', 'vis_lit_perf_arts',
+#                                  'indiv_society', 'natural_world']]
 
-# remove inactive courses from prereqs
-prereqs = prereqs[prereqs['course_from'].isin(course_data['course'])]
-prereqs = prereqs[prereqs['course_to'].isin(course_data['course'])]
+course_data.drop(list(course_data.filter(regex = '_spare')), axis = 1, inplace = True)
+course_data.drop(list(course_data.filter(regex = 'ld')), axis = 1, inplace = True)
+
+# DONT'T remove inactive courses from prereqs
+# prereqs = prereqs[prereqs['course_from'].isin(course_data['course'])]
+# prereqs = prereqs[prereqs['course_to'].isin(course_data['course'])]
 
 # vertex metadata
 clist = prereqs[['course_to', 'course_from']].drop_duplicates()
